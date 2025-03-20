@@ -3,6 +3,14 @@
 This document defines the data tiers within Dogpark from the perspective of Retriever requirements and interface guarantees.
 It will not prescribe hosting technologies.
 
+## Overall
+
+The below items apply outside of any one specific Tier:
+
+- Retriever shall make access to the Tiers available, but will not reason about which to use
+  - It is the responsibility of the client, through some available query flag, to specify which Tier(s) to use
+  - This is because each Tier caters to a different use-case, specified below.
+
 ## Tier 0
 
 Tier 0 shall operate under the following requirements:
@@ -11,13 +19,19 @@ Modelling/content:
 
 - Pre-conformed to BioLink model and node-normalized
 - Knowledge graph is not partitioned by source
+- Lower overall coverage than Tier 1
 
 Usage:
 
 - Higher performance than Tier 1
-- Sub-queried by Retriever in all normal cases of Shepherd queries
 - Supports multi-hop graph queries
 - Interfaces with Retriever through a query language determined by its hosting technology, not TRAPI
+
+Use case:
+
+- The client wants fast multi-hop graph query performance, even at the cost of coverage
+- Example: Rule-based pathfinding
+- Example: Quick-access subgraphs for secondary use (scoring, etc.)
 
 ## Tier 1
 
@@ -26,20 +40,29 @@ Tier 1 shall operate under the following requirements:
 Modelling/content:
 
 - Pre-conformed to BioLink model and node-normalized
-- Not necessarily a single unified knowledge graph
-- Update pipeline is significantly faster than Tier 0
+- KGs are independently managed and served, with intent to allow for more frequent updates
 - Comprehensive: includes all Translator-ingested knowledge
+- Acts as a staging ground for knowledge promotion to Tier 0
 
 Usage:
 
 - Supports 1-hop associations
-- Sub-queried by Retriever in all normal cases of Shepherd queries
-  - Subject to Retriever reasoning about when to query Tier 1 vs. Tier 0
+- Potentially higher single-hop performance than Tier 0
 - Interfaces with Retriever through a query language determined by its hosting technology, not TRAPI
+
+Use case:
+
+- The client wants fast single-hop performance
+- Example: Advanced hop-by-hop reasoning
+- The client wants greater coverage, even at the cost of multi-hop performance
+- Example: Rule-based query expansion
 
 ## Tier 2
 
 Tier 2 shall operate under the following requirements:
+
+> [!NOTE]
+> Tier 2 support within Retriever is not an implementation priority until at least after Tier 1 integration MVP
 
 Modelling/content:
 
@@ -54,6 +77,9 @@ Usage:
 - Assumed to only support 1-hop associations (or associations by entity-based lookup)
 - Interfaces with Retriever through either TRAPI or bespoke REST model via x-bte annotation
 - No guarantees about performance
-- Sub-queried by Retriever in all normal cases of Shepherd queries
-  - Unlike Tiers 1 & 0, however, these sub-queries are not awaited by query graph execution and must not contribute to Retriever query processing time
-  - Retriever shall make available some flag by which a client may request that these sub-queries are awaited
+- Sub-queried in background by Retriever during regular query execution in order to cache knowledge
+
+Use case:
+
+- Testing ground for APIs where knowledge source dump is less accessible
+- The client wants absolute maximum possible coverage, using Tier 2 in combination with Tier 1, at potentially extreme performance cost
