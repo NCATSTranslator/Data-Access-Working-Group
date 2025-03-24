@@ -30,8 +30,9 @@ Usage:
 Use case:
 
 - The client wants fast multi-hop graph query performance, even at the cost of coverage
+- Example: Quick-access subgraphs for secondary use (rule-mining, scoring, etc.)
+- Example: Rule-based query expansion lookups
 - Example: Rule-based pathfinding
-- Example: Quick-access subgraphs for secondary use (scoring, etc.)
 
 ## Tier 1
 
@@ -55,7 +56,7 @@ Use case:
 - The client wants fast single-hop performance
 - Example: Advanced hop-by-hop reasoning
 - The client wants greater coverage, even at the cost of multi-hop performance
-- Example: Rule-based query expansion
+- Example: Narrow template-based expansion lookups
 
 ## Tier 2
 
