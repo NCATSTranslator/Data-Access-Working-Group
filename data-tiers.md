@@ -10,6 +10,10 @@ The below items apply outside of any one specific Tier:
 - Retriever shall make access to the Tiers available, but will not reason about which to use
   - It is the responsibility of the client, through some available query flag, to specify which Tier(s) to use
   - This is because each Tier caters to a different use-case, specified below.
+- Retriever shall handle predicate symmetry for Tier 2. For Tiers 1 and 0, Retriever shall only query in canonical directions
+- Biolink Class and Predicate hierarchy will be handled within Retriever for Tier 2, and pre-computed
+  - Whether Tiers 1 and 2 bake-in these hierarchies, or the hierarchies are handled by Retriever, depends on future benchmarking and discussion.
+- Handling of node and edge attributes ("properties") is pending further discussion.
 
 ## Tier 0
 
@@ -17,7 +21,7 @@ Tier 0 shall operate under the following requirements:
 
 Modelling/content:
 
-- Pre-conformed to BioLink model and node-normalized
+- Pre-conformed to BioLink model and node-normalized, with predicates in canonical direction
 - Knowledge graph is not partitioned by source
 - Lower overall coverage than Tier 1
 
@@ -40,7 +44,7 @@ Tier 1 shall operate under the following requirements:
 
 Modelling/content:
 
-- Pre-conformed to BioLink model and node-normalized
+- Pre-conformed to BioLink model and node-normalized, with predicates in canonical direction
 - KGs are independently managed and served, with intent to allow for more frequent updates
 - Comprehensive: includes all Translator-ingested knowledge
 - Acts as a staging ground for knowledge promotion to Tier 0
@@ -50,6 +54,7 @@ Usage:
 - Supports 1-hop associations
 - Potentially higher single-hop performance than Tier 0
 - Interfaces with Retriever through a query language determined by its hosting technology, not TRAPI
+- Individual KGs are stored accessed via different endpoints
 
 Use case:
 
